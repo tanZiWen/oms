@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+  <!DOCTYPE struts PUBLIC  
+      "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"  
+      "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!-- struts的action配置文件 -->
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
+	<constant name="struts.multipart.maxSize" value="10485760"></constant>
+	<constant name="struts.i18n.encoding" value="utf-8" />
+	<!-- 所有的action都应该放在对应的package下 -->
+	<!-- <global-results> <result name="table" type="redirect">http://www.baidu.com</result> 
+		</global-results> -->
+	<package name="struts-global" extends="struts-default, json-default" namespace="/">
+
+		 <interceptors>
+			<interceptor name="authInterceptor" class="com.prosnav.oms.interceptor.AuthInterceptor">
+				<param name="ignoredUrls">ErrorAction.run,BasicAction.run,UserAction.user,CustAction.kyc_mould,OrderListAction.find
+				ProdInfoAction.edit_return,ProdInfoAction.submit_return,ProdInfoAction.approve_return,
+				ProdInfoAction.item_edit_return,ProdInfoAction.item_submit_return,ProdInfoAction.item_approve_return
+				</param>
+			</interceptor>
+			<interceptor name="logInterceptor" class="com.prosnav.oms.interceptor.LogInterceptor"></interceptor>
+			<interceptor-stack name="omsStack">
+				<interceptor-ref name="logInterceptor"></interceptor-ref>
+				<interceptor-ref name="authInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="omsStack"></default-interceptor-ref>
+		<global-results>
+			<result name="error">/jsp/exception.jsp</result>
+			<result name="unauthorized">/jsp/auth.jsp</result>
+			<result name="index">/index.jsp</result>
+		</global-results>
+		<!-- 公用action -->
+		<action name="hello" class="com.prosnav.oms.action.HelloAction" method="hello">
+			<result name="success">/jsp/hello.jsp</result>
+			<interceptor-ref name="json"></interceptor-ref>
+		</action>
+		<action name="base" class="com.work.action.BaseAction" method="run">
+			<result name="error">error.jsp</result>
+			<result name="success">/jsp/cust/cust_list.jsp</result>
+			<!-- <interceptor-ref name="authority"></interceptor-ref> -->
+			<!-- <interceptor-ref name="basicStack" /> <interceptor-ref name="params" 
+				/> <interceptor-ref name="usermessage" /> -->
+
+		</action>
+		<action name="index"></action>
+		<action name="error" class="com.prosnav.oms.action.ErrorAction" method="run">
+			<result name="error">/jsp/exception.jsp</result>
+		</action>
+		<!-- 机构客户管理 -->
+		<action name="org_reset" class="com.prosnav.oms.action.OrgAction"
+			method="org_reset"></action>
+		
+		<action name="org_report" class="com.prosnav.oms.action.OrgAction" method="org_report">
+		</action>
+		<action name="org_submit" class="com.prosnav.oms.action.OrgAction"
+			method="org_submit">
+		</action>
+		<action name="org_pass" class="com.prosnav.oms.action.OrgAction" method="org_pass">
+		</action>
+		<action name="org_nopass" class="com.prosnav.oms.action.OrgAction"
+			method="org_nopass">
+		</action>
+		<action name="org" class="com.prosnav.oms.action.OrgAction" method="run">
+			<result name="success">/jsp/cust/cust_org.jsp</result>
+			<!-- <interceptor-ref name="omsStack"></interceptor-ref> -->
+		</action>
+		<action name="pagequer" class="com.prosnav.oms.action.OrgAction" method="pagequery">
+		</action>
+		<action name="pagequeryorg" class="com.prosnav.oms.action.OrgAction"
+			method="pagequeryorg">
+		</action>
+		<action name="org_detail" class="com.prosnav.oms.action.OrgAction"
+			method="detail">
+			<result name="success">/jsp/cust/cust_org_detail.jsp</result>
+		</action>
+		<action name="skiporg" class="com.prosnav.oms.action.OrgAction" method="skip">
+			<result name="success">/jsp/cust/cust_org_add.jsp</result>
+		</action>
+		<action name="addorg" class="com.prosnav.oms.action.OrgAction" method="addOrg">
+			<result name="success"></result>
+		</action>
+		<action name="queryorg" class="com.prosnav.oms.action.OrgAction" method="queryorg">
+			<result name="success"></result>
+		</action>
+		<action name="org_select" class="com.prosnav.oms.action.OrgAction"
+			method="org_select">
+		</action>
+		<action name="org_edit" class="com.prosnav.oms.action.OrgAction" method="org_edit">
+		</action>
+
+		<action name="gp_addGp" class="com.prosnav.oms.action.GpAction" method="gp_addGp">
+
+		</action>
+		<action name="pagegpquery" class="com.prosnav.oms.action.GpAction"
+			method="pagequery">
+		</action>
+		<action name="gp_select" class="com.prosnav.oms.action.GpAction" method="gp_select">
+			<result name="success">/jsp/product/GP.jsp</result>
+		</action>
+		<action name="GP_select" class="com.prosnav.oms.action.GpAction" method="GP_select">
+		</action>
+		<action name="GP_edit" class="com.prosnav.oms.action.GpAction" method="edit">
+		</action>
+		<action name="gp_detail" class="com.prosnav.oms.action.GpAction" method="detail">
+			<result name="success">/jsp/product/GP_detail.jsp</result>
+		</action>
+		<action name="skipgp" class="com.prosnav.oms.action.GpAction" method="skip">
+			<result name="success">/jsp/product/GP_add.jsp</result>
+		</action>
+		<action name="gp_submit" class="com.prosnav.oms.action.GpAction" method="gp_submit">
+		</action>
+		<action name="gp_pass" class="com.prosnav.oms.action.GpAction" method="gp_pass">
+		</action>
+		<action name="gp_nopass" class="com.prosnav.oms.action.GpAction" method="gp_nopass">
+		</action>
+        <action name="gp_report" class="com.prosnav.oms.action.GpAction" method="gp_report">
+		</action>
+        <action name="gp_reset" class="com.prosnav.oms.action.GpAction"
+			method="gp_reset"></action>
+
+
+		<!-- c客户 -->
+		<action name="cust_reset" class="com.prosnav.oms.action.CustAction"
+			method="cust_reset">
+		</action>
+		<action name="custfam_reset" class="com.prosnav.oms.action.CustAction"
+			method="custfam_reset">
+		</action>
+		<action name="cust_report" class="com.prosnav.oms.action.CustAction"
+			method="cust_report">
+		</action>
+		<action name="skipaddsave" class="com.prosnav.oms.action.CustAction"
+			method="skipaddsave">
+		</action>
+		<action name="skipaddpass" class="com.prosnav.oms.action.CustAction"
+			method="skipaddpass">
+		</action>
+		<action name="skipadd" class="com.prosnav.oms.action.CustAction" method="skipadd">
+			<result name="success">/jsp/cust/cust_add.jsp</result>
+		</action>
+		<action name="cust_distribution" class="com.prosnav.oms.action.CustAction" method="cust_distribution">
+			<result name="success">/jsp/cust/cust_distribution.jsp</result>
+		</action>
+		<action name="distribution_search" class="com.prosnav.oms.action.CustAction" method="distribution_search">
+		</action>
+		<action name="distribution_pagequery" class="com.prosnav.oms.action.CustAction" method="distributionPageQuery">
+		</action>
+		<action name="transfersales_list" class="com.prosnav.oms.action.CustAction" method="transferSalesList">
+		</action>
+		<action name="transfer_sales" class="com.prosnav.oms.action.CustAction" method="transferSales">
+		</action>
+		
+		<action name="upLoad" class="com.prosnav.oms.action.UpLoadAction"
+			method="upLoad">
+
+		</action>
+		<action name="kycinsert" class="com.prosnav.oms.action.uploaaction"
+			method="kycinsert">
+			<result name="success">/jsp/cust/success.jsp</result>
+		</action>
+		<action name="load" class="com.prosnav.oms.action.uploaaction" method="load">
+			<!-- <result name="success">/jsp/cust/success_upkyc.jsp</result> -->
+		</action>
+		<action name="pagequery" class="com.prosnav.oms.action.CustAction"
+			method="pagequery">
+		</action>
+		<action name="pagequeryselect" class="com.prosnav.oms.action.CustAction"
+			method="pagequeryselect">
+		</action>
+		<!-- //添加前查询客户是否存在 -->
+		<action name="querycust" class="com.prosnav.oms.action.CustAction"
+			method="querycust">
+		</action>
+		<!-- //添加家族成员前查询客户是否存在 -->
+		<action name="queryFamilyMember" class="com.prosnav.oms.action.CustAction"
+			method="queryFamilyMember">
+		</action>
+		<!-- //有家族后，添加家族成员前查询客户是否存在 -->
+		<action name="queryFamMem" class="com.prosnav.oms.action.CustAction"
+			method="queryFamMem">
+		</action>
+		<action name="addCustinfo" class="com.prosnav.oms.action.CustAction"
+			method="addCustinfo">
+		</action>
+		<action name="addCompinfo" class="com.prosnav.oms.action.CustAction"
+			method="addCompinfo">
+		</action>
+		<action name="addFamilyinfo" class="com.prosnav.oms.action.CustAction"
+			method="addFamilyinfo">
+		</action>
+		<action name="addFamilymember" class="com.prosnav.oms.action.CustAction"
+			method="addFamilymember">
+		</action>
+
+		<action name="cust_edit" class="com.prosnav.oms.action.CustAction"
+			method="cust_edit">
+
+		</action>
+		<action name="comp_edit" class="com.prosnav.oms.action.CustAction"
+			method="comp_edit">
+
+		</action>
+		<action name="fammember_edit" class="com.prosnav.oms.action.CustAction"
+			method="fammember_edit">
+
+		</action>
+		<action name="fammember_submit" class="com.prosnav.oms.action.CustAction"
+			method="fammember_submit">
+
+		</action>
+		<action name="fammember_pass" class="com.prosnav.oms.action.CustAction"
+			method="fammember_pass">
+
+		</action>
+		<action name="fammember_nopass" class="com.prosnav.oms.action.CustAction"
+			method="fammember_nopass">
+
+		</action>
+		<action name="cust" class="com.prosnav.oms.action.CustAction" method="run">
+			<result name="success">/jsp/cust/cust_list.jsp</result>
+
+		</action>
+		<action name="cust_detail" class="com.prosnav.oms.action.CustAction"
+			method="detail">
+			<result name="cust">/jsp/cust/cust_detail.jsp</result>
+			<result name="comp">/jsp/cust/company_detail.jsp</result>
+			<result name="family">/jsp/cust/famliy_detail.jsp</result>
+
+		</action>
+		<action name="addMember" class="com.prosnav.oms.action.CustAction"
+			method="addMember">
+
+		</action>
+		<action name="compList" class="com.prosnav.oms.action.CustAction"
+			method="compList">
+
+		</action>
+
+		<action name="cust_search" class="com.prosnav.oms.action.CustAction"
+			method="cust_search">
+		</action>
+		<action name="cust_submit" class="com.prosnav.oms.action.CustAction"
+			method="cust_submit">
+		</action>
+		<action name="cust_pass" class="com.prosnav.oms.action.CustAction"
+			method="cust_pass">
+		</action>
+		<action name="cust_nopass" class="com.prosnav.oms.action.CustAction"
+			method="cust_nopass">
+		</action>
+		<action name="show_detail" class="com.prosnav.oms.action.CustAction"
+			method="show_detail">
+			<result name="success">/jsp/cust/famliy_detail.jsp</result>
+		</action>
+		<action name="addSee" class="com.prosnav.oms.action.CustAction" method="addSee">
+			<result name="success">/jsp/cust/cust_detail.jsp</result>
+		</action>
+		<action name="kyc_mould" class="com.prosnav.oms.action.CustAction" method="kyc_mould">
+		</action>
+
+		<!-- <action name="productInfo" class="com.prosnav.oms.action.productInfoAction" 
+			method="query"> </action> <action name="queryGPInfo" class="com.prosnav.oms.action.GPInfoAction" 
+			method="queryGPInfo"> <result name="queryGPInfo">/jsp/product/GP.jsp</result> 
+			</action> <action name="prodQuery" class="com.prosnav.oms.action.ProdInfoAction" method="prodQuery"> 
+			<result name="prodQuery">/jsp/product/product.jsp</result> </action> <action 
+			name="prodSelect" class="com.prosnav.oms.action.ProdInfoAction" method="prodSelect"> 
+			<result name="prodSelect">/jsp/product/product.jsp</result> </action> <action 
+			name="prodAdd" class="com.prosnav.oms.action.ProdInfoAction" method="prodAdd"> <result 
+			name="prodAdd">/jsp/product/product_add.jsp</result> </action> <action name="product_add" 
+			class="com.prosnav.oms.action.ProdInfoAction" method="product_add"> <result name="product_add">/jsp/product/product_add.jsp</result> 
+			</action> <action name="prodAllot" class="com.prosnav.oms.action.ProdAllotAction" 
+			method="prodAllot"> </action> <action name="GP_add_demo" class="com.prosnav.oms.action.GPInfoAction" 
+			method="GP_add_demo"> <result name="GP_add_demo">/jsp/product/GP_add_demo.jsp</result> 
+			</action> <action name="add_prod_gp" class="com.prosnav.oms.action.GPInfoAction" method="add_prod_gp"> 
+			</action> <action name="production_detail" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="production_detail"> <result name="production_detail">/jsp/product/production_detail.jsp</result> 
+			</action> <action name="product_demo" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="product_demo"> <result name="product_demo">/jsp/product/product_demo.jsp</result> 
+			</action> <action name="LPAdd" class="com.prosnav.oms.action.LPAddAction" method="LPAdd"> 
+			</action> <action name="LP_add" class="com.prosnav.oms.action.ProdInfoAction" method="LP_add"> 
+			<result name="LP_add">/jsp/product/LP_add.jsp</result> </action> <action 
+			name="add_ED" class="com.prosnav.oms.action.ProdInfoAction" method="add_ED"> <result 
+			name="add_ED">/jsp/product/add_ED.jsp</result> </action> <action name="reg_JD" 
+			class="com.prosnav.oms.action.ProdInfoAction" method="reg_JD"> <result name="reg_JD">/jsp/product/reg_JD.jsp</result> 
+			</action> <action name="sure_HK" class="com.prosnav.oms.action.ProdInfoAction" method="sure_HK"> 
+			<result name="sure_HK">/jsp/product/sure_HK.jsp</result> </action> <action 
+			name="sure_HK_add" class="com.prosnav.oms.action.ProdInfoAction" method="sure_HK_add"> 
+			</action> <action name="sure_sHK_add" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="sure_sHK_add"> </action> <action name="prodAddCheck" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="prodAddCheck"> </action> <action name="product" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="product"> <result name="product">/jsp/product/product.jsp</result> 
+			</action> <action name="LP_edit" class="com.prosnav.oms.action.ProdInfoAction" method="LP_edit"> 
+			<result name="LP_edit">/jsp/product/LP_edit.jsp</result> </action> <action 
+			name="LPEdit" class="com.prosnav.oms.action.ProdInfoAction" method="LPEdit"> </action> 
+			<action name="save_prod" class="com.prosnav.oms.action.ProdInfoAction" method="save_prod"> 
+			</action> <action name="prod_check" class="com.prosnav.oms.action.ProdInfoAction" 
+			method="prod_check"> </action> <action name="reg_JDAdd" class="com.prosnav.oms.action.RegJDAction" 
+			method="reg_JDAdd"> </action> <action name="orderList" class="com.prosnav.oms.action.OrderListAction" 
+			method="orderList"> <result name="success">/jsp/order/order_list.jsp</result> 
+			</action> <action name="orderSelect" class="com.prosnav.oms.action.OrderListAction" 
+			method="orderSelect"> <result name="orderSelect">/jsp/order/order_list.jsp</result> 
+			</action> <action name="order_Detail" class="com.prosnav.oms.action.OrderListAction" 
+			method="order_Detail"> <result name="orderDetail">jsp/order/order_detail_org.jsp</result> 
+			<result name="sale_order_Detail">jsp/order/sale_order_detail_org.jsp</result> 
+			</action> <action name="do_Play" class="com.prosnav.oms.action.OrderListAction" method="do_Play"> 
+			<result name="doPlay">jsp/order/order_detail_org.jsp</result> </action> <action 
+			name="orderEdit" class="com.prosnav.oms.action.OrderListAction" method="orderEdit"> 
+			<result name="orderEdit">jsp/order/order_edit.jsp</result> </action> <action 
+			name="orderSave" class="com.prosnav.oms.action.OrderListAction" method="orderSave"> 
+			<result name="orderSa">jsp/order/order_edit.jsp</result> </action> <action 
+			name="payment" class="com.prosnav.oms.action.OrderListAction" method="payment"> <result 
+			name="payment">jsp/order/order_list.jsp</result> </action> <action name="refund" 
+			class="com.prosnav.oms.action.OrderListAction" method="refund"> <result name="refund">jsp/order/order_edit.jsp</result> 
+			</action> <action name="orderCust" class="com.prosnav.oms.action.OrderListAction" 
+			method="orderCust"> </action> <action name="orderInsert" class="com.prosnav.oms.action.OrderListAction" 
+			method="orderInsert"> </action> <action name="skiporder" class="com.prosnav.oms.action.OrderListAction" 
+			method="skiporder"> <result>/jsp/order/order_new.jsp</result> </action> -->
+		<!-- 产品 -->
+		<action name="export_prod" class="com.prosnav.oms.action.ProdInfoAction" method="export_prod">
+		</action>
+		
+		<action name="reg_JDAdd" class="com.prosnav.oms.action.RegJDAction"
+			method="reg_JDAdd">
+		</action>
+
+
+		<action name="LPAdd" class="com.prosnav.oms.action.LPAddAction" method="LPAdd">
+		</action>
+
+
+		<action name="prodAllot" class="com.prosnav.oms.action.ProdAllotAction"
+			method="prodAllot">
+		</action>
+
+
+
+		<action name="queryGPInfo" class="com.prosnav.oms.action.GPInfoAction"
+			method="queryGPInfo">
+			<result name="queryGPInfo">/jsp/product/GP.jsp</result>
+		</action>
+
+
+		<action name="add_GP" class="com.prosnav.oms.action.GPInfoAction"
+			method="add_GP">
+			<result name="add_GP">/jsp/product/GP_add_demo.jsp</result>
+		</action>
+
+		<action name="add_prod_gp" class="com.prosnav.oms.action.GPInfoAction"
+			method="add_prod_gp">
+		</action>
+
+
+		<action name="prodQuery" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prodQuery">
+			<result name="prodQuery">/jsp/product/product.jsp</result>
+		</action>
+
+		<action name="prodSelect" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prodSelect">
+			<result name="prodSelect">/jsp/product/product.jsp</result>
+		</action>
+
+		<action name="prod_addInfo" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prod_addInfo">
+		</action>
+
+
+		<action name="product_add" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_add">
+			<result name="product_add">/jsp/product/product_add.jsp</result>
+		</action>
+
+
+		<action name="more_ED" class="com.prosnav.oms.action.ProdInfoAction"
+			method="more_ED">
+			<result name="more_ED">/jsp/product/more_ED.jsp</result>
+		</action>
+
+
+		<action name="fee_manage" class="com.prosnav.oms.action.ProdInfoAction"
+			method="fee_manage">
+			<result name="fee_manage">/jsp/product/fee_manage.jsp</result>
+		</action>
+
+
+		<action name="lp_fee_mana" class="com.prosnav.oms.action.ProdInfoAction"
+			method="lp_fee_mana">
+		</action>
+
+		<action name="fee_mana" class="com.prosnav.oms.action.ProdInfoAction"
+			method="fee_mana">
+		</action>
+
+
+		<action name="save_fee_mana" class="com.prosnav.oms.action.ProdInfoAction"
+			method="save_fee_mana">
+		</action>
+
+
+		<action name="more_ED_detail" class="com.prosnav.oms.action.ProdInfoAction"
+			method="more_ED_detail">
+			<result name="more_ED_detail">/jsp/product/more_ED.jsp</result>
+		</action>
+
+		<action name="production_detail" class="com.prosnav.oms.action.ProdInfoAction"
+			method="production_detail">
+			<result name="production_detail">/jsp/product/production_detail.jsp</result>
+		</action>
+
+		<action name="product_demo" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_demo">
+			<result name="product_demo">/jsp/product/product_demo.jsp</result>
+		</action>
+
+
+		<action name="LP_add" class="com.prosnav.oms.action.ProdInfoAction"
+			method="LP_add">
+			<result name="LP_add">/jsp/product/LP_add.jsp</result>
+		</action>
+		<action name="add_ED" class="com.prosnav.oms.action.ProdInfoAction"
+			method="add_ED">
+			<result name="add_ED">/jsp/product/add_ED.jsp</result>
+		</action>
+		<action name="reg_JD" class="com.prosnav.oms.action.ProdInfoAction"
+			method="reg_JD">
+			<result name="reg_JD">/jsp/product/reg_JD.jsp</result>
+		</action>
+		<action name="sure_HK" class="com.prosnav.oms.action.ProdInfoAction"
+			method="sure_HK">
+			<result name="sure_HK">/jsp/product/sure_HK.jsp</result>
+		</action>
+
+		<action name="sure_HK_add" class="com.prosnav.oms.action.ProdInfoAction"
+			method="sure_HK_add">
+		</action>
+
+
+		<action name="sure_sHK_add" class="com.prosnav.oms.action.ProdInfoAction"
+			method="sure_sHK_add">
+		</action>
+
+		<action name="sure_sHK" class="com.prosnav.oms.action.ProdInfoAction"
+			method="sure_sHK">
+			<result name="sure_sHK">/jsp/product/sure_sHK.jsp</result>
+		</action>
+
+		<action name="prodAddCheck" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prodAddCheck">
+		</action>
+
+		<action name="product" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product">
+			<result name="product">/jsp/product/product.jsp</result>
+		</action>
+
+		<action name="LP_edit" class="com.prosnav.oms.action.ProdInfoAction"
+			method="LP_edit">
+			<result name="LP_edit">/jsp/product/LP_edit.jsp</result>
+		</action>
+
+
+		<action name="LPEdit" class="com.prosnav.oms.action.ProdInfoAction"
+			method="LPEdit">
+		</action>
+
+		<action name="save_prod" class="com.prosnav.oms.action.ProdInfoAction"
+			method="save_prod">
+		</action>
+
+		<action name="prod_check" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prod_check">
+		</action>
+
+		<action name="prod_close" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prod_close">
+		</action>
+
+		<action name="raise_fee" class="com.prosnav.oms.action.ProdInfoAction"
+			method="raise_fee">
+		</action>
+
+
+		<action name="r_fee" class="com.prosnav.oms.action.ProdInfoAction"
+			method="r_fee">
+			<result name="r_fee">/jsp/product/raise_fee.jsp</result>
+		</action>
+
+
+		<action name="product_yifabu" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_yifabu">
+			<result name="product_yifabu">/jsp/product/product_yifabu.jsp</result>
+		</action>
+
+		<action name="product_fabu" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_fabu">
+			<result name="product_fabu">/jsp/product/product_fabu.jsp</result>
+		</action>
+
+
+		<action name="product_fabu_detail" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_fabu_detail">
+			<!-- <result name="product_fabu_detail">/jsp/product/product_fabu.jsp</result> -->
+		</action>
+
+		<action name="product_yfb" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_yfb">
+		</action>
+
+
+		<action name="glf" class="com.prosnav.oms.action.ProdInfoAction" method="glf">
+		</action>
+		<action name="product_reset" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_reset">
+			</action>
+
+		<action name="product_fb" class="com.prosnav.oms.action.ProdInfoAction"
+			method="product_fb">
+                </action>
+         <action name="prod_diffcoe" class="com.prosnav.oms.action.ProdInfoAction"
+			method="prod_diffcoe">
+			<result name="success">/jsp/product/prod_diffcoe.jsp</result>
+                </action>
+         <action name="query_diffcoe" class="com.prosnav.oms.action.ProdInfoAction"
+			method="query_diffcoe">
+                </action>
+         <action name="select_diffcoe" class="com.prosnav.oms.action.ProdInfoAction"
+			method="select_diffcoe">
+                </action>
+          <action name="edit_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="edit_return">
+                </action>
+           <action name="submit_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="submit_return">
+                </action>
+		 <action name="approve_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="approve_return">
+                </action>
+		<action name="item_edit_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="item_edit_return">
+                </action>
+           <action name="item_submit_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="item_submit_return">
+                </action>
+		 <action name="item_approve_return" class="com.prosnav.oms.action.ProdInfoAction"
+			method="item_approve_return">
+                </action>
+		<!-- 报表 -->
+		<action name="report_index" class="com.prosnav.oms.action.ReportAction"
+			method="report_index">
+			<result name="report_index">/jsp/report/report.jsp</result>
+		</action>
+		<action name="export_report" class="com.prosnav.oms.action.ReportAction" method="export_report">
+			<result name="sucess">index.jsp</result>
+		</action>
+		<action name="f_exceport_report" class="com.prosnav.oms.action.ReportAction" method="f_exceport_report">
+			<result name="sucess">index.jsp</result>
+		</action>
+		<!-- 订单 -->
+		<action name="order_reset" class="com.prosnav.oms.action.OrderListAction"
+			method="order_reset"></action>
+		<action name="order_report" class="com.prosnav.oms.action.OrderListAction"
+			method="order_report"></action>
+		<action name="orderList" class="com.prosnav.oms.action.OrderListAction"
+			method="orderList">
+			<result name="success">/jsp/order/order_list.jsp</result>
+		</action>
+		<action name="fin_exceport_report" class="com.prosnav.oms.action.ReportAction" method="fin_exceport_report">
+		</action>
+		<action name="family_report" class="com.prosnav.oms.action.ReportAction" method="family_report">
+		</action>
+		<action name="orderSelect" class="com.prosnav.oms.action.OrderListAction"
+			method="orderSelect">
+			<result name="orderSelect">/jsp/order/order_list.jsp</result>
+		</action>
+		<action name="order_Detail" class="com.prosnav.oms.action.OrderListAction"
+			method="order_Detail">
+			<result name="orderDetail">jsp/order/order_detail_org.jsp</result>
+			<result name="sale_order_Detail">jsp/order/sale_order_detail_org.jsp</result>
+			<result name="operate_order_Detail">/jsp/order/operate_order_detail_org.jsp</result>
+			<result name="manage_order_Detail">/jsp/order/manage_order_detail_org.jsp</result>
+			<result name="finance_order_Detail">/jsp/order/finance_order_detail_org.jsp</result>
+		</action>
+
+		<action name="do_Play" class="com.prosnav.oms.action.OrderListAction"
+			method="do_Play">
+			<result name="do_Play">jsp/order/order_detail_org.jsp</result>
+		</action>
+
+		<action name="orderEdit" class="com.prosnav.oms.action.OrderListAction"
+			method="orderEdit">
+			<result name="orderEdit">jsp/order/order_edit.jsp</result>
+		</action>
+
+		<action name="orderSave" class="com.prosnav.oms.action.OrderListAction"
+			method="orderSave">
+			<result name="orderSa">jsp/order/order_edit.jsp</result>
+		</action>
+		<action name="achievementChan" class="com.prosnav.oms.action.OrderListAction"
+			method="achievementChan">
+		</action>
+		<action name="SearchAchievement" class="com.prosnav.oms.action.OrderListAction"
+			method="SearchAchievement">
+		</action>
+
+		<action name="payment" class="com.prosnav.oms.action.OrderListAction"
+			method="payment">
+			<result name="payment">jsp/order/order_list.jsp</result>
+		</action>
+
+		<action name="refund" class="com.prosnav.oms.action.OrderListAction"
+			method="refund">
+			<result name="refund">jsp/order/order_edit.jsp</result>
+		</action>
+		<action name="orderCust" class="com.prosnav.oms.action.OrderListAction"
+			method="orderCust">
+		</action>
+		<action name="orderInsert" class="com.prosnav.oms.action.OrderListAction"
+			method="orderInsert">
+		</action>
+		<action name="orderOrg" class="com.prosnav.oms.action.OrderListAction"
+			method="orderOrg">
+		</action>
+		<action name="skiporder" class="com.prosnav.oms.action.OrderListAction"
+			method="skiporder">
+			<result>/jsp/order/order_new.jsp</result>
+		</action>
+		<action name="returnsave" class="com.prosnav.oms.action.OrderListAction"
+			method="returnsave">
+		</action>
+		<action name="kycselect" class="com.prosnav.oms.action.OrderListAction"
+			method="kycselect">
+		</action>
+		<action name="order_prod" class="com.prosnav.oms.action.OrderListAction"
+			method="order_prod">
+		</action>
+		<action name="Calculation" class="com.prosnav.oms.action.OrderListAction"
+			method="Calculation">
+		</action>
+		<action name="orderSales" class="com.prosnav.oms.action.OrderListAction"
+			method="orderSales">
+		</action>
+		<action name="ordermoney" class="com.prosnav.oms.action.OrderListAction"
+			method="ordermoney">
+		</action>
+		<action name="approve" class="com.prosnav.oms.action.OrderListAction"
+			method="approve"></action>
+		<action name="call_approve" class="com.prosnav.oms.action.OrderListAction"
+			method="call_approve">
+		</action>
+		<action name="play_approve" class="com.prosnav.oms.action.OrderListAction"
+			method="play_approve"></action>
+		<action name="cust_org_select" class="com.prosnav.oms.action.OrderListAction"
+			method="cust_org_select"></action>
+		<action name="order_cust" class="com.prosnav.oms.action.OrderListAction"
+			method="order_cust"></action>
+		<action name="change_detail" class="com.prosnav.oms.action.OrderListAction"
+			method="change_detail"></action>
+		<action name="del_payment" class="com.prosnav.oms.action.OrderListAction"
+			method="del_payment"></action>
+		<action name="del_call_payment" class="com.prosnav.oms.action.OrderListAction"
+			method="del_call_payment"></action>
+		<action name="return_approve" class="com.prosnav.oms.action.OrderListAction"
+			method="return_approve"></action>
+		<!-- 分页 -->
+			<action name="orderPageList" class="com.prosnav.oms.action.OrderListAction"
+			method="orderPageList"></action>
+		<action name="find" class="com.prosnav.oms.action.OrderListAction"
+			method="find"></action>
+		<action name="giveup_call" class="com.prosnav.oms.action.OrderListAction"
+			method="giveup_call"></action>
+		
+		<!-- 奖金 -->
+		<!-- 销售奖金列表 -->
+		<action name="selectReward" class="com.prosnav.oms.action.RewardAction"
+			method="selectReward">
+			<result name="success">/jsp/reward/reward_sales.jsp</result>
+		</action>
+		<action name="rewardSearch" class="com.prosnav.oms.action.RewardAction"
+			method="rewardSearch">
+		</action>
+		<!-- 销售提交奖金 -->
+		<action name="rewardSubmit" class="com.prosnav.oms.action.RewardAction"
+			method="rewardSubmit">
+		</action>
+
+		<!-- 奖金个人计算页面 -->
+		<action name="reward_count_reckon" class="com.prosnav.oms.action.RewardAction"
+			method="reward_count_reckon">
+			<result name="success">jsp/reward/reward_out.jsp</result>
+		</action>
+		<!-- 奖金个人计算页面 -->
+		<action name="reward_count" class="com.prosnav.oms.action.RewardAction"
+			method="reward_count">
+			<result name="success">jsp/reward/reward_geren.jsp</result>
+		</action>
+		<!-- 奖金计算页面 -->
+		<action name="save_reward" class="com.prosnav.oms.action.RewardAction"
+			method="save_reward"></action>
+		<!-- 奖金个人计算奖金变更 -->
+		<action name="reword_count_changeinfo" class="com.prosnav.oms.action.RewardAction"
+			method="reword_count_changeinfo">
+			<result name="success">jsp/reward/reward_geren.jsp</result>
+		</action>
+		<action name="reward_count_search" class="com.prosnav.oms.action.RewardAction"
+			method="reward_count_search">
+		</action>
+		<!-- 奖金核对页面-查询 -->
+		<action name="reward_give" class="com.prosnav.oms.action.RewardAction"
+			method="reward_give">
+			<result name="success">jsp/reward/reward_chek.jsp</result>
+		</action>
+		<!-- 奖金发放 -->
+		<action name="reward_give_info" class="com.prosnav.oms.action.RewardAction"
+			method="reward_give_info">
+		</action>
+		<action name="reword_count_info" class="com.prosnav.oms.action.RewardAction"
+			method="reword_count_info">
+			<result name="success">jsp/reward/reward_set_1.jsp</result>
+		</action>
+		<!-- 奖金核对页面 -->
+		<action name="reward_check_save" class="com.prosnav.oms.action.RewardAction"
+			method="reward_check_save"></action>
+
+
+		<!-- 预留 -->
+		<!-- 预留 -->
+		<action name="reward_yuliu_search" class="com.prosnav.oms.action.RewardAction"
+			method="reward_yuliu_search">
+		</action>
+		<!-- 预留发放或扣减查询 -->
+		<action name="reserve_save" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_save">
+		</action>
+		<!-- 预留发放或扣减确认 -->
+		<action name="reserve_confirm" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_confirm"></action>
+		<!-- 奖金预留 -->
+		<action name="reserve_change" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_change">
+		</action>
+		<!-- 预留核对页面 预留列表查询 -->
+		<action name="reserve_check_search" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_check_search">
+			<result name="success">jsp/reward/reserve_chek.jsp</result>
+		</action>
+		<!-- 预留核对页面 多条件查询 -->
+		<action name="reserve_check_sear" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_check_sear">
+		</action>
+		<!-- 预留核对页面 -详情 -->
+		<action name="reserve_check_all" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_check_all">
+		</action>
+		<!-- 奖金核对页面- 预留发放保存 -->
+		<action name="reserve_check_save" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_check_save"></action>
+		<!-- 销售确认预留发放 -->
+		<action name="reserve_sales_confirm" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_sales_confirm"></action>
+		<!-- 预留 计算页面 -->
+		<action name="yuliu" class="com.prosnav.oms.action.RewardAction" method="yuliu_select">
+			<result name="success">jsp/reward/reward_yuliu.jsp</result>
+		</action>
+		<action name="reserve_sales_select" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_sales_select"></action>
+		<!-- 团队奖金 -->
+		<!-- 团队奖金 销售确认 -->
+		<action name="group_confirm" class="com.prosnav.oms.action.RewardAction"
+			method="group_confirm"></action>
+		<!-- 团队奖金 多条件查询 -->
+		<action name="group_sales_select" class="com.prosnav.oms.action.RewardAction"
+			method="group_sales_select"></action>
+		<!-- 奖金核对页面-团队奖金列表 -->
+		<action name="reward_check_search" class="com.prosnav.oms.action.RewardAction"
+			method="reward_check_search">
+			<result name="success">jsp/reward/group_chek.jsp</result>
+		</action>
+		<!-- 团队考核 -->
+		<action name="group_check" class="com.prosnav.oms.action.RewardAction"
+			method="group_check"></action>
+		<!-- 团队核对页面 奖金保存 -->
+		<action name="group_check_save" class="com.prosnav.oms.action.RewardAction"
+			method="group_check_save"></action>
+		<!-- 奖金核对页面-多条件查询 -->
+		<action name="group_check_select" class="com.prosnav.oms.action.RewardAction"
+			method="group_check_select"></action>
+		<!-- 团队奖金计算页面-计算 -->
+		<action name="group_count_info" class="com.prosnav.oms.action.RewardAction"
+			method="group_count_info"></action>
+		<!-- 团队奖金计算页面-多条件查询 -->
+		<action name="reward_group_select" class="com.prosnav.oms.action.RewardAction"
+			method="reward_group_select"></action>
+		<!-- 团队奖金核算页面-保存 -->
+		<action name="group_count_save" class="com.prosnav.oms.action.RewardAction"
+			method="group_count_save"></action>
+		<!-- 进入团队计算页面 -->
+		<action name="tuandui" class="com.prosnav.oms.action.RewardAction"
+			method="tuandui">
+			<result name="success">jsp/reward/reward_tuandui.jsp</result>
+		</action>
+			<!-- 个人奖金历史纪录 -->
+		<action name="search_reward_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_reward_list">
+			<result name="success">jsp/reward/reward_personal_finished.jsp</result>
+		</action>
+		<action name="reward_list" class="com.prosnav.oms.action.RewardAction" method="reward_list">
+		</action>
+		<!-- 团队历史纪录查询 -->
+		<action name="search_group_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_group_list">
+			<result name="success">jsp/reward/group_history.jsp</result>
+		</action>
+		<!-- 预留历史纪录查询 -->
+		<action name="search_reserve_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_reserve_list">
+			<result name="success">jsp/reward/reserve_history.jsp</result>
+		</action>
+		
+		<!-- 预留批次查询 -->
+		<action name="reservebatch" class="com.prosnav.oms.action.RewardAction"
+			method="reservebatch">
+		</action>
+		<!-- 奖金批次查询 -->
+		<action name="rewardbatch" class="com.prosnav.oms.action.RewardAction"
+			method="rewardbatch">
+		</action>
+		<!-- 团队奖金批次查询 -->
+		<action name="groupbatch" class="com.prosnav.oms.action.RewardAction"
+			method="groupbatch">
+		</action>
+		
+		
+		
+		<!-- 预留发放批次查询 -->
+		<action name="reserve_givebatch" class="com.prosnav.oms.action.RewardAction"
+			method="reserve_givebatch">
+		</action>
+		<!-- 奖金发放批次查询 -->
+		<action name="reward_givebatch" class="com.prosnav.oms.action.RewardAction"
+			method="reward_givebatch">
+		</action>
+		<!-- 团队奖金发放批次查询 -->
+		<action name="group_givebatch" class="com.prosnav.oms.action.RewardAction"
+			method="group_givebatch">
+		</action>
+		<!-- 个人奖金发放历史纪录 -->
+		<action name="search_rewardgive_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_rewardgive_list">
+			<result name="success">jsp/reward/reward_history.jsp</result>
+		</action>
+		<!-- 团队发放历史纪录查询 -->
+		<action name="search_groupgive_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_groupgive_list">
+			<result name="success">jsp/reward/group_history.jsp</result>
+		</action>
+		<!-- 预留发放历史纪录查询 -->
+		<action name="search_reservegive_list" class="com.prosnav.oms.action.RewardAction"
+			method="search_reservegive_list">
+			<result name="success">jsp/reward/reserve_history.jsp</result>
+		</action>
+		
+		<!-- 奖金报表导出 -->
+		<action name="reward_count_report" class="com.prosnav.oms.action.RewardAction"
+			method="reward_count_report">
+		</action>
+		
+		<action name="basic" class="com.prosnav.oms.action.BasicAction" method="run">
+			<result name="sucess">index.jsp</result>
+		</action>
+		
+		<!-- 重置 --> 
+		<action name="product_reset" class="com.prosnav.oms.action.ProdInfoAction"
+		method="product_reset"></action>
+		
+			<!--header.jsp 用户权限控制 -->
+		<action name="user" class="com.prosnav.oms.action.UserAction" method="user">
+		 <result name="sucess">header.jsp</result>
+		</action>
+		
+
+	</package>
+
+</struts>

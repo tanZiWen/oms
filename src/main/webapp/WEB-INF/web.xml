@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>OMS</display-name>
+  <welcome-file-list>
+    <welcome-file>/index.jsp</welcome-file>
+  </welcome-file-list>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+    	classpath:applicationContext.xml,
+    	classpath*:modules/*.xml
+    </param-value>
+  </context-param>
+  
+  <listener> 
+        <listener-class> 
+            org.springframework.web.context.ContextLoaderListener 
+        </listener-class> 
+    </listener>
+
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    <filter>
+		<filter-name>sessionFilter</filter-name>
+		<filter-class>com.prosnav.core.jwt.DefaultJwtFilter</filter-class>
+		<init-param>
+			<param-name>privateKey</param-name>
+			<param-value>/etc/server/privatekey</param-value>
+		</init-param>
+		<init-param>
+			<param-name>loginUrl</param-name>
+			<!-- <param-value>http://192.168.21.186:10086/login</param-value> -->
+			<param-value>http://192.168.8.205:8089/login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>alg</param-name>
+			<param-value>HS256</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cid</param-name>
+			<param-value>OMS</param-value>
+		</init-param>
+		<init-param>
+			<param-name>userUrl</param-name>
+			<!-- <param-value>http://192.168.21.186:9090/oauth/v1/userInfo</param-value> -->
+			<param-value>http://192.168.8.205:9090/oauth/v1/userInfo</param-value>
+		</init-param>
+		<!-- <init-param>
+			<param-name>exclude</param-name>
+			<param-value>/OMS/index.jsp</param-value>
+		</init-param> -->
+	</filter>
+	 <filter-mapping>
+		<filter-name>sessionFilter</filter-name>
+		<url-pattern>*</url-pattern>
+	</filter-mapping>
+
+<!-- 	<filter>
+		<filter-name>authority</filter-name>
+		<filter-class>com.fm.filter.AuthorityFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>authority</filter-name>
+		<url-pattern>*.action</url-pattern>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping> -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+		<servlet>
+		<servlet-name>prop</servlet-name>
+		<servlet-class>com.prosnav.oms.util.Property</servlet-class>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+  	<servlet>
+	<servlet-name>timer</servlet-name>
+	<servlet-class>com.prosnav.oms.util.timerServlet</servlet-class>
+	<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet>
+	<servlet-name>pooltimer</servlet-name>
+	<servlet-class>com.prosnav.oms.util.poolTimerservlet</servlet-class>
+	<load-on-startup>4</load-on-startup>
+	</servlet>
+	<servlet>
+	<servlet-name>FuncInfoInitializer</servlet-name>
+	<servlet-class>com.prosnav.core.init.FuncInfoInitializer</servlet-class>
+	<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>Cache</servlet-name>
+		<servlet-class>com.prosnav.oms.util.mailCache</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<!-- 文件上传 -->
+	<!-- <servlet>
+    <servlet-name>UploadHandleServlet</servlet-name>
+    <servlet-class>me.gacl.web.controller.UploadHandleServlet</servlet-class>
+    </servlet>
+
+   <servlet-mapping>
+    <servlet-name>UploadHandleServlet</servlet-name>
+    <url-pattern>/com.fm.action/UploadHandleServlet</url-pattern>
+    </servlet-mapping> -->
+</web-app>
